@@ -4,7 +4,7 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: "turbo-notes",
   description: "Person Note Base A VitePress Site",
-  base: "https://github.com/turboYuu/turbo-note",
+  base: "/turbo-note/",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
