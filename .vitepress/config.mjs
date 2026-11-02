@@ -2,10 +2,10 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "turbo-notes",
+  title: "turbo-note",
   description: "Person Note Base A VitePress Site",
   base: '/turbo-note/',
-
+  head: [['link', { rel: 'icon', type:'image/png',href: '/turbo-note/favicon.png' }]],
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
