@@ -114,12 +114,28 @@ conda env remove -n myenv           # 删除环境
 curl -LsSf https://astral.sh/uv/install.sh | sh   # macOS / Linux
 # Windows: powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
 
-uv venv                  # 创建 .venv
-uv pip install requests  # 兼容 pip 用法
-uv init myproj           # 或创建带 pyproject.toml 的项目
-uv add requests          # 添加依赖并写入 pyproject.toml
-uv run main.py           # 自动使用项目环境运行
+uv venv                          # 创建 .venv
+uv venv --python 3.11            # 创建 .venv 并指定 Python 版本（本机没有会自动下载）
+uv python install 3.12           # 仅安装 Python，不创建环境
+uv python list                   # 查看可用和已安装的 Python 版本
+uv python pin 3.11               # 写入 .python-version，固定项目使用的版本
+uv pip install requests          # 兼容 pip 用法
+uv init myproj                   # 或创建带 pyproject.toml 的项目
+uv add requests                  # 添加依赖并写入 pyproject.toml
+uv export --format requirements-txt > requirements.txt  # 按 uv.lock 导出版本锁定后的依赖
+uv sync                          # 在另一台机器上按 pyproject.toml + uv.lock 复现环境
+uv run main.py                   # 自动使用项目环境运行
 ```
+
+> uv 没有 conda 那种整包导出命令：项目模式下共享 `pyproject.toml` + `uv.lock` 即可复现；需要 `requirements.txt` 时用 `uv export` 生成，再用 `uv pip install -r requirements.txt` 安装。
+
+**不指定版本时**，uv 按以下顺序选择解释器，结果取决于本机环境：
+
+1. `--python` / `UV_PYTHON` / `.python-version` / `pyproject.toml` 中的 `requires-python` 约束；
+2. 都没有时，优先使用 `PATH` 上的系统 Python，其次使用 uv 自己管理的 Python；
+3. 本机没有可用解释器时，自动下载 uv 默认的稳定版（默认版本随 uv 版本变化，例如 0.9+ 为 3.14）。
+
+所以可能出现「本机装的是 3.12，环境就是 3.12」「另一台没装 Python，uv 自动拉最新稳定版」的情况。需要跨机器一致时，用 `--python` 或 `uv python pin` 明确固定版本。
 
 - 官方文档：https://docs.astral.sh/uv/
 - 安装步骤：https://docs.astral.sh/uv/getting-started/installation/
